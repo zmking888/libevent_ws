@@ -114,10 +114,16 @@ void read_com_cb(struct bufferevent *bev,void *ctx){
 }
 
 
-static void handle_commreq(struct bufferevent *bev,void *)
+static void handle_commreq(struct bufferevent *bev,void *ctx)
 {
        //to handle common request
-       //todo 
+       char *p=(char *)(ctx);
+	   if(p){
+              //pb to json
+              
+	   
+	   }
+        
        
 }
 
@@ -156,13 +162,13 @@ void request_read_cb(struct bufferevent *bev, void *ctx) {
 					 LOG("%s","json");
 				}
 			*/
-			handle_commreq(bev,c);
-		    bufferevent_setcb(conn->bev,read_com_cb,write_comm_cb,NULL,conn);	
-			bufferevent_setwatermark(conn->bev,EV_READ,1,0);
-		    bufferevent_setwatermark(conn->bev,EV_WRITE,0,0);
-			bufferevent_enable(conn->bev,EV_READ);
-			bufferevent_enable(conn->bev,EV_WRITE);
-		    //bufferevent_write(bev,c,sizeof(c));
+		handle_commreq(bev,c);
+	    bufferevent_setcb(conn->bev,read_com_cb,write_comm_cb,NULL,conn);	
+		bufferevent_setwatermark(conn->bev,EV_READ,1,0);
+	    bufferevent_setwatermark(conn->bev,EV_WRITE,0,0);
+		bufferevent_enable(conn->bev,EV_READ);
+		bufferevent_enable(conn->bev,EV_WRITE);
+	    //bufferevent_write(bev,c,sizeof(c));
 		}
 		
 		if(n >=4 &&pos!=std::string::npos){
@@ -171,12 +177,14 @@ void request_read_cb(struct bufferevent *bev, void *ctx) {
 			bufferevent_disable(conn->bev, EV_READ); //stop reading before a valid handshake
 			respond_websocket_request(conn); //send websocket response 
 		}
+		
 		//  if (n >= 4 && conn->ws_req_str.substr(n - 4) == "\r\n\r\n") {
 		//	bufferevent_disable(conn->bev, EV_READ); //stop reading before a valid handshake
 		//  handshake is ok
 		//	respond_websocket_request(conn); //send websocket response 
-		//}
-	} else {
+		//  }
+		
+	} else{
 		ws_serve_exit(conn);
 	}
 }
